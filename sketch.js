@@ -12,14 +12,14 @@ function setup() {
   ak47 = createSprite(900, 480,10,10);
   ak47.addImage(ak47img);
   ak47.scale=0.2;
-  ak47.debug=true
+  ///ak47.debug=true
   ak47.setCollider("circle",0,0,100);
 
   player1 = createSprite(100,100,200,100)
   player1.addImage(player1img);
   player1.scale=0.3;
   player1.setCollider("circle",0,0,100);
-  player1.debug=true
+  ///player1.debug=true
 
    enemygroup=createGroup()
    bulletgroup=createGroup()
@@ -56,12 +56,14 @@ text("score:"+score,100,100)
   if(gamestate===1){
     player1.addImage(player1gun);
     ak47.visible=false
-    if(keyDown("space")){
+    if(keyDown("space")||touches.length > 0 ){
       createBullet(player1.x,player1.y)
+      touches = [];
         }
+        spawnenemy();
   }
 
-  spawnenemy();
+  
 if(enemygroup.isTouching(player1)){
      gamestate=2   
 }
@@ -80,7 +82,13 @@ if(enemygroup.isTouching(player1)){
     textSize(100)
     text("you lose",displayWidth/2-180,displayHeight/2-180)
     ak47.visible=false
-    enemy.visible=false
+    ///enemy.visible=false
+    enemygroup.setVelocityXEach(0);
+    enemygroup.setLifetimeEach(-1);
+    if(touches.length>0 || keyDown("SPACE")) {      
+      reset();
+      touches = []
+    }
   }
   drawSprites();
 }
@@ -97,7 +105,7 @@ function spawnenemy() {
     enemy.lifetime = 200;
     enemy.addImage(enemyimg)
   enemy.scale=0.19;
-  enemy.debug=true
+  ///enemy.debug=true
 enemy.setCollider("circle",0,0,300)
   enemygroup.add(enemy);
   }
@@ -112,4 +120,14 @@ function createBullet(x,y){
     beam.velocityX=6
     bulletgroup.add(beam);
   }
+}
+
+function reset(){
+  gamestate=1
+  player1.visible=true
+  player1.x=100  
+  enemygroup.destroyEach();
+  ///ak47.visible=true
+  score=0
+    ///enemy.visible=false
 }
